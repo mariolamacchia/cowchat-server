@@ -1,0 +1,29 @@
+{
+  "name": "cowchat-server",
+  "version": "1.0.0",
+  "description": "CowChat server that uses ExpressJS and socket.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mariolamacchia/cowchat-server.git"
+  },
+  "keywords": [
+    "cow",
+    "cowsay",
+    "cowchat",
+    "chat",
+    "socket.io"
+  ],
+  "author": "Mario Lamacchia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mariolamacchia/cowchat-server/issues"
+  },
+  "homepage": "https://github.com/mariolamacchia/cowchat-server",
+  "dependencies": {
+    "socket.io": "^1.2.0"
+  }
+}
