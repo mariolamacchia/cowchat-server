@@ -10,13 +10,25 @@ app.get('/', function(req, res){
 
 io.on('connection', function(socket){
   
-  socket.on('signup', function(usr) {
+  socket.on('signup', function(message) {
+    users.signup(message.content, function(error) {
+      if (error) socket.emit(message.id + ':error', error);
+      else socket.emit('login', message);
+    });
   });
 
   socket.on('login', function(usr) {
+    users.login(message.content, function(error, session) {
+      if (error) socket.emit(message.id + ':error', error);
+      else socket.emit(message.id + ':success', session);
+    });
   });
 
   socket.on('logout', function(usr) {
+    user.logout(message.content, function(error) {
+      if (error) socket.emit(message.id + ':error', error);
+      else socket.emit(message.id + ':success');
+    });
   });
 
   socket.on('message', function(msg){
