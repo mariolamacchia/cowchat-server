@@ -45,7 +45,7 @@ io.on('connection', function(socket){
 
   socket.on('user', function(message) {
     console.log('requested user');
-    users.getUserByUsername(message.content, function(e, d) {
+    db.getUserByUsername(message.content, function(e, d) {
       if (e) return socket.emit(message.id + ':error', e);
       if (!d.username) return socket.emit(message.id + ':error', 'User not found');
       delete d.password;
@@ -55,7 +55,7 @@ io.on('connection', function(socket){
 
   socket.on('me', function(message) {
     console.log('requesed me');
-    users.getUserBySession(message.content, function(e, d) {
+    db.getUserBySession(message.content, function(e, d) {
       if (e) return socket.emit(message.id + ':error', e);
       if (!d.username) return socket.emit(message.id + ':error', 'User not found');
       delete d.password;
