@@ -58,12 +58,22 @@ module.exports = {
     var session = createSessionId();
     redis.set('session:' + session, username, function(e) {
       if (e) return callback(e);
-      return callback(null, session);
+      redis.set('user:' + username + 'session', session, function(e) {
+        if (e) return callback(e);
+        return callback(null, session);
+      });
     });
   },
   deleteSession: function(session, callback) {
-    redis.del('session:' + session, function(e) {
-      return callback(e);
+    module.exports.getUserBySession(session, function(e, d) {
+      if (e) return callback(e);
+      if (!d.username) return callback('Not logged');
+      redis.del('session:' + session, function(e) {
+        if (e) return callback(e);
+        redis.del('user:' + d.username + 'session', function(e) {
+          return callback(e);
+        });
+      });
     });
   },
 }
