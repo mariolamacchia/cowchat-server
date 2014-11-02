@@ -9,8 +9,10 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
+  console.log('connected');
   
   socket.on('signup', function(message) {
+    console.log('signing');
     users.signup(message.content, function(error) {
       if (error) socket.emit(message.id + ':error', error);
       else user.login(message.content, function(error, session) {
@@ -20,14 +22,16 @@ io.on('connection', function(socket){
     });
   });
 
-  socket.on('login', function(usr) {
+  socket.on('login', function(message) {
+    console.log('logging in');
     users.login(message.content, function(error, session) {
       if (error) socket.emit(message.id + ':error', error);
       else socket.emit(message.id + ':success', session);
     });
   });
 
-  socket.on('logout', function(usr) {
+  socket.on('logout', function(message) {
+    console.log('logging out');
     user.logout(message.content, function(error) {
       if (error) socket.emit(message.id + ':error', error);
       else socket.emit(message.id + ':success');
