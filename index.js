@@ -74,9 +74,13 @@ io.on('connection', function(socket){
         if (e) return socket.emit(msg.id + ':error', e);
         var from = d;
         delete from.password;
-        socket.emit(to.session, msg.content.message);
+        socket.emit(to.session, {
+          from: from,
+          id: msg.id,
+          content: msg.content.message
+        });
         socket.emit(msg.id + ':success');
-        console.log('message sent');
+        console.log('message sent to session ' + to.session);
       });
     });
   });
