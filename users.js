@@ -13,7 +13,7 @@ function comparePassword(pwd1, pwd2, callback) {
 }
 
 module.exports = {
-  signup = function(usr, callback) {
+  signup: function(usr, callback) {
     var password = usr.password;
     // Check if user exists already
     db.getUserByUsername(usr.username, function(err, data) {
@@ -30,7 +30,7 @@ module.exports = {
     });
   },
 
-  login = function(username, password, callback) {
+  login: function(username, password, callback) {
     // Check if user exists
     db.getUserByUsername(username, function(err, usr) {
       if (err) return callback(err);
@@ -48,7 +48,7 @@ module.exports = {
     });
   },
 
-  logout = function(session, callback) {
+  logout: function(session, callback) {
     db.deleteSession(session, callback);
   }
 }

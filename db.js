@@ -12,7 +12,7 @@ function createSessionId() {
 }
 
 module.exports = {
-  saveUser = function(usr, callback) {
+  saveUser: function(usr, callback) {
     redis.set('user:' + usr.username + 'name', usr.name, function(e) {
       if (e) return callback(e);
       redis.set('user:' + usr.username + 'email', usr.email, function(e) {
@@ -25,7 +25,7 @@ module.exports = {
     });
   },
 
-  getUserByUsername = function(username, callback) {
+  getUserByUsername: function(username, callback) {
     redis.get('user:' + username + 'password', function(e, password) {
       if (e) return callback(e);
       if (!password) return callback('User not found');
@@ -48,20 +48,20 @@ module.exports = {
     });
   },
 
-  getUserBySession = function(session, callback) {
+  getUserBySession: function(session, callback) {
     redis.get('session:' + session, function(e, username) {
       if (e) return callback(e);
       this.getUserByUsername(username, callback);
     });
   },
-  createSession = function(username, callback) {
+  createSession: function(username, callback) {
     var session = createSessionId();
     redis.set('session:' + session, username, function(e) {
       if (e) return callback(e);
       return callback(null, session);
     });
   },
-  deleteSession = function(session, callback) {
+  deleteSession: function(session, callback) {
     redis.del('session:' + session, function(e) {
       return callback(e);
     });
