@@ -49,5 +49,6 @@ module.exports = {
   },
 
   logout = function(session, callback) {
+    db.deleteSession(session, callback);
   }
 }
