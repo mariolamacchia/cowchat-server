@@ -35,12 +35,16 @@ module.exports = {
           if (e) return callback(e);
           redis.get('user:' + username + 'name', function(e, name) {
             if (e) return callback(e);
-            return callback(null, {
-              username: username,
-              name: name,
-              password: password,
-              cow: cow,
-              email: email
+            redis.get('user:' + username + 'session', function(e, session) {
+              if (e) return callback(e);
+              return callback(null, {
+                username: username,
+                session: session,
+                name: name,
+                password: password,
+                cow: cow,
+                email: email
+              });
             });
           });
         });
