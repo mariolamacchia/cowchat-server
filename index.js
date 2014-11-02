@@ -13,10 +13,12 @@ io.on('connection', function(socket){
   
   socket.on('signup', function(message) {
     console.log('signing');
+    var password = message.content.password;
     users.signup(message.content, function(error) {
       if (error) return socket.emit(message.id + ':error', error);
       console.log('signed');
-      user.login(message.content, function(error, session) {
+      message.content.password = password;
+      users.login(message.content, function(error, session) {
         if (error) socket.emit(message.id + ':error', error);
         else socket.emit(message.id + ':success', session);
       });
