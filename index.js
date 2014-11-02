@@ -36,7 +36,7 @@ io.on('connection', function(socket){
 
   socket.on('logout', function(message) {
     console.log('logging out');
-    user.logout(message.content, function(error) {
+    users.logout(message.content, function(error) {
       if (error) return socket.emit(message.id + ':error', error);
       console.log('logged out');
       socket.emit(message.id + ':success');
@@ -64,7 +64,21 @@ io.on('connection', function(socket){
   });
 
   socket.on('message', function(msg){
-    io.emit('message', msg);
+    console.log('sending message to ' + msg.content.to);
+    db.getUserByUsername(msg.content.to, function(e, d) {
+      if (e) return socket.emit(msg.id + ':error', e);
+      if (!d.username) return socket.emit(msg.id + ':error', 'User not found');
+      var to = d;
+      delete to.password;
+      db.getUserBySession(msg.content.me, function(e, d) {
+        if (e) return socket.emit(msg.id + ':error', e);
+        var from = d;
+        delete from.password;
+        socket.emit(to.session, msg.content.message);
+        socket.emit(msg.id + ':success');
+        console.log('message sent');
+      });
+    });
   });
 
 });
