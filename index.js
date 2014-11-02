@@ -14,8 +14,9 @@ io.on('connection', function(socket){
   socket.on('signup', function(message) {
     console.log('signing');
     users.signup(message.content, function(error) {
-      if (error) socket.emit(message.id + ':error', error);
-      else user.login(message.content, function(error, session) {
+      if (error) return socket.emit(message.id + ':error', error);
+      console.log('signed');
+      user.login(message.content, function(error, session) {
         if (error) socket.emit(message.id + ':error', error);
         else socket.emit(message.id + ':success', session);
       });
@@ -25,16 +26,18 @@ io.on('connection', function(socket){
   socket.on('login', function(message) {
     console.log('logging in');
     users.login(message.content, function(error, session) {
-      if (error) socket.emit(message.id + ':error', error);
-      else socket.emit(message.id + ':success', session);
+      if (error) return socket.emit(message.id + ':error', error);
+      console.log('logged');
+      socket.emit(message.id + ':success', session);
     });
   });
 
   socket.on('logout', function(message) {
     console.log('logging out');
     user.logout(message.content, function(error) {
-      if (error) socket.emit(message.id + ':error', error);
-      else socket.emit(message.id + ':success');
+      if (error) return socket.emit(message.id + ':error', error);
+      console.log('logged out');
+      socket.emit(message.id + ':success');
     });
   });
 
