@@ -24,7 +24,9 @@
   },
   "homepage": "https://github.com/mariolamacchia/cowchat-server",
   "dependencies": {
+    "bcrypt": "^0.8.0",
     "express": "^4.10.1",
+    "redis": "^0.12.1",
     "socket.io": "^1.2.0"
   }
 }
