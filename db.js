@@ -51,7 +51,7 @@ module.exports = {
   getUserBySession: function(session, callback) {
     redis.get('session:' + session, function(e, username) {
       if (e) return callback(e);
-      this.getUserByUsername(username, callback);
+      module.exports.getUserByUsername(username, callback);
     });
   },
   createSession: function(username, callback) {
