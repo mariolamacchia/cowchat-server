@@ -36,6 +36,7 @@ module.exports = {
     // Check if user exists
     db.getUserByUsername(username, function(err, usr) {
       if (err) return callback(err);
+      if (!usr.username) return callback('User not found.');
       // Check password
       comparePassword(password, usr.password, function(err, data) {
         if (err) return callback(err);
