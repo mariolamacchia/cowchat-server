@@ -17,11 +17,7 @@ io.on('connection', function(socket){
     users.signup(message.content, function(error) {
       if (error) return socket.emit(message.id + ':error', error);
       console.log('signed');
-      message.content.password = password;
-      users.login(message.content, function(error, session) {
-        if (error) socket.emit(message.id + ':error', error);
-        else socket.emit(message.id + ':success', session);
-      });
+      socket.emit(message.id + ':success', session);
     });
   });
 
