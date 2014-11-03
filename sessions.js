@@ -42,7 +42,7 @@ module.exports = {
         return users[username].session;
     },
     delete: function(username) {
-        delete users[username];
+        users[username] = null;
     },
     checkSession: function(username, session) {
         if (!users[username]) return false;
