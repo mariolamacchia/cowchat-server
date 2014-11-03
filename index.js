@@ -69,11 +69,23 @@ io.on('connection', function(socket){
     var targetSocket = sessions.getSocket(msg.content.to);
     if (!targetSocket)
       return reply(socket, msg.id, false, 'User not found or not connected');
+    var success = false;
+    targetSocket.on(msg.id + ':received', function() {
+      success = true;
+      reply(socket, msg.id, true);
+    });
     targetSocket.emit('message', {
+      id: msg.id,
       from: msg.content.me.username,
       message: msg.content.message
     });
-    return reply(socket, msg.id, true);
+    setTimeout(
+      function() {
+        if (!success)
+          reply(socket, msg.id, false, 'User offline');
+      },
+      5000
+    );
   });
 
 });
