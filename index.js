@@ -31,7 +31,7 @@ io.on('connection', function(socket){
     });
 
     socket.on('login', function(message) {
-        console.log(message.content.username + 'logging in');
+        console.log(message.content.username + ' logging in');
         users.login(socket, message.content, function(error, session) {
             if (error) return reply(socket, message.id, false, error);
             console.log('logged');
