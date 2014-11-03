@@ -1,5 +1,6 @@
 var bcrypt = require('bcrypt'),
-    db = require('./db');
+    db = require('./db'),
+    sessions = require('./sessions');
 
 function encryptPassword(password, callback) {
   bcrypt.genSalt(function(err, salt) {
@@ -16,7 +17,7 @@ module.exports = {
   signup: function(usr, callback) {
     var password = usr.password;
     // Check if user exists already
-    db.getUserByUsername(usr.username, function(err, data) {
+    db.getUser(usr.username, function(err, data) {
       if (err) return callback(err);
       if (data.username) return callback('Existing user');
       // Encrypt password
@@ -30,11 +31,11 @@ module.exports = {
     });
   },
 
-  login: function(usr, callback) {
+  login: function(socket, usr, callback) {
     var username = usr.username;
     var password = usr.password;
     // Check if user exists
-    db.getUserByUsername(username, function(err, usr) {
+    db.getUser(username, function(err, usr) {
       if (err) return callback(err);
       if (!usr.username) return callback('User not found.');
       // Check password
@@ -42,15 +43,22 @@ module.exports = {
         if (err) return callback(err);
         if (!data) return callback('Invalid password');
         // Create session
-        db.createSession(username, function(err, session) {
-          if (err) return callback(err);
-          return callback(null, session);
-        });
+        var session = sessions.create(username, socket);
+        return callback(null, session);
       });
     });
   },
 
-  logout: function(session, callback) {
-    db.deleteSession(session, callback);
+  logout: function(usr, callback) {
+    sessions.delete(usr.username);
+    callback(null, true);
+  },
+
+  getUser: function(username, callback) {
+    db.getUser(username, function(e, user) {
+      if (e) return callback(e);
+      delete user.password;
+      callback(null, user);
+    });
   }
 }
