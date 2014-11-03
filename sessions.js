@@ -24,7 +24,7 @@ setInterval(function() {
     setTimeout(function() {
       if (!alive) {
         console.log(k + 'is dead');
-        delete users[k];
+        module.exports.delete(k);
       }
     }, 5000);
   }

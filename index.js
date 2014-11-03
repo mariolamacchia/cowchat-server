@@ -42,15 +42,6 @@ io.on('connection', function(socket){
     });
   });
 
-  socket.on('logout', function(message) {
-    console.log(message.content + ' logging out');
-    users.logout(message.content, function(error) {
-      if (error) return reply(socket, message.id, false, error);
-      console.log(message.content + ' logged out');
-      reply(socket, message.id, true);
-    });
-  });
-
   socket.on('user', function(message) {
     console.log('requested user: ' + message.content);
     users.getUser(message.content, function(e, d) {

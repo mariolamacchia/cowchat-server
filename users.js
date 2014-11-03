@@ -49,11 +49,6 @@ module.exports = {
     });
   },
 
-  logout: function(usr, callback) {
-    sessions.delete(usr.username);
-    callback(null, true);
-  },
-
   getUser: function(username, callback) {
     db.getUser(username, function(e, user) {
       if (e) return callback(e);
