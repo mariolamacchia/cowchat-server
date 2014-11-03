@@ -11,6 +11,25 @@ function createSessionId() {
     ("0000" + (Math.floor(Math.random() * 0x10000)).toString(16)).substr(-4);
 }
 
+setInterval(function() {
+  for (var k in users) {
+    console.log('send keepalive to ' + k);
+    var alive = false;
+    users[k].socket.on('alive', function() {
+      console.log(k + ' is alive');
+      alive = true;
+      users[k].socket.removeAllListeners('alive');
+    });
+    users[k].socket.emit('keep alive');
+    setTimeout(function() {
+      if (!alive) {
+        console.log(k + 'is dead');
+        delete users[k];
+      }
+    }, 5000);
+  }
+}, 5000);
+
 module.exports = {
   create: function(username, socket) {
     users[username] = {session: createSessionId(), socket: socket};
