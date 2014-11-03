@@ -56,7 +56,7 @@ io.on('connection', function(socket){
     users.getUser(message.content, function(e, d) {
       if (e) return reply(socket, message.id, false, e);
       if (!d.username)
-        reply(socket, message.id, false, 'User not found');
+        return reply(socket, message.id, false, 'User not found');
       reply(socket, message.id, true, d);
     });
   });
