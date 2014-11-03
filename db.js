@@ -2,46 +2,52 @@ var redis = require('redis').createClient();
 
 module.exports = {
     saveUser: function(usr, callback) {
-        var setEmail = function(e) {
+        var nameCallback = function(e) {
             if (e) return callback(e);
-            redis.set('user:' + usr.username + 'email', usr.email, setCow);
+            redis.set('user:' + usr.username + 'email', usr.email,
+                      emailCallback);
         }
-        var setCow = function(e) {
+        var emailCallback = function(e) {
             if (e) return callback(e);
-            redis.set('user:' + usr.username + 'cow', usr.cow, setPassword);
+            redis.set('user:' + usr.username + 'cow', usr.cow, cowCallback);
         }
-        var setPassword = function(e) {
+        var cowCallback = function(e) {
             if (e) return callback(e);
             redis.set('user:' + usr.username + 'password',
                       usr.password, callback);
         }
-        redis.set('user:' + usr.username + 'name', usr.name, setEmail);
+        redis.set('user:' + usr.username + 'name', usr.name, nameCallback);
     },
 
     getUser: function(username, callback) {
 
-        var getEmail = function(e) {
+        var password, email, cow;
+        var passwordCallback = function(e, data) {
             if (e) return callback(e);
-            if (!password) return callback(null, {});
-            redis.get('user:' + username + 'email', getCow);
+            if (!data) return callback(null, {});
+            password = data;
+            redis.get('user:' + username + 'email', emailCallback);
         }
-        var getCow = function(e) {
+        var emailCallback = function(e, data) {
             if (e) return callback(e);
-            redis.get('user:' + username + 'cow', getName);
+            email = data;
+            redis.get('user:' + username + 'cow', cowCallback);
         }
-        var getName = function(e) {
+        var cowCallback = function(e, data) {
             if (e) return callback(e);
-            redis.get('user:' + username + 'name', function(e, name) {
-                if (e) return callback(e);
-                return callback(null, {
-                    username: username,
-                    name: name,
-                    password: password,
-                    cow: cow,
-                    email: email
-                });
+            cow = data;
+            redis.get('user:' + username + 'name', nameCallback);
+        }
+        var nameCallback = function(e, name) {
+            if (e) return callback(e);
+            return callback(null, {
+                username: username,
+                name: name,
+                password: password,
+                cow: cow,
+                email: email
             });
         }
-        redis.get('user:' + username + 'password', getEmail);
+        redis.get('user:' + username + 'password', passwordCallback);
     },
 }
