@@ -56,27 +56,30 @@ io.on('connection', function(socket){
     // Check if user is connected
     if (!sessions.checkSession(msg.content.me.username, msg.content.me.session))
       return reply(socket, msg.id, false, 'Not connected');
-    // Check if user is connected
-    var targetSocket = sessions.getSocket(msg.content.to);
-    if (!targetSocket)
-      return reply(socket, msg.id, false, 'User not found or not connected');
-    var success = false;
-    targetSocket.on(msg.id + ':received', function() {
-      success = true;
-      reply(socket, msg.id, true);
+    users.getUser(msg.content.me.username, function(e, usr) {
+      if (e) return reply(socket, msg.id, false, e);
+      // Check if user is connected
+      var targetSocket = sessions.getSocket(msg.content.to);
+      if (!targetSocket)
+        return reply(socket, msg.id, false, 'User not found or not connected');
+      var success = false;
+      targetSocket.on(msg.id + ':received', function() {
+        success = true;
+        reply(socket, msg.id, true);
+      });
+      targetSocket.emit('message', {
+        id: msg.id,
+        from: usr,
+        message: msg.content.message
+      });
+      setTimeout(
+        function() {
+          if (!success)
+            reply(socket, msg.id, false, 'User offline');
+        },
+        5000
+      );
     });
-    targetSocket.emit('message', {
-      id: msg.id,
-      from: msg.content.me.username,
-      message: msg.content.message
-    });
-    setTimeout(
-      function() {
-        if (!success)
-          reply(socket, msg.id, false, 'User offline');
-      },
-      5000
-    );
   });
 
 });
