@@ -21,7 +21,7 @@ io.on('connection', function(socket){
   console.log('connected');
   
   socket.on('signup', function(message) {
-    console.log('signing');
+    console.log('signing user ' + message.content.username);
     var password = message.content.password;
     users.signup(message.content, function(error) {
       if (error) return reply(socket, message.id, false, error);
@@ -31,7 +31,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('login', function(message) {
-    console.log('logging in');
+    console.log(message.content.username + 'logging in');
     users.login(socket, message.content, function(error, session) {
       if (error) return reply(socket, message.id, false, error);
       console.log('logged');
@@ -43,16 +43,16 @@ io.on('connection', function(socket){
   });
 
   socket.on('logout', function(message) {
-    console.log('logging out');
+    console.log(message.content + ' logging out');
     users.logout(message.content, function(error) {
       if (error) return reply(socket, message.id, false, error);
-      console.log('logged out');
+      console.log(message.content + ' logged out');
       reply(socket, message.id, true);
     });
   });
 
   socket.on('user', function(message) {
-    console.log('requested user');
+    console.log('requested user: ' + message.content);
     users.getUser(message.content, function(e, d) {
       if (e) return reply(socket, message.id, false, e);
       if (!d.username)
