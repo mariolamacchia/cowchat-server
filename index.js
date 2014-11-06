@@ -32,12 +32,12 @@ io.on('connection', function(socket){
 
     socket.on('login', function(message) {
         console.log(message.content.username + ' logging in');
-        users.login(socket, message.content, function(error, session) {
-            if (error) return reply(socket, message.id, false, error);
-            console.log('logged');
-            reply(socket, message.id, true, {
-                username: message.content.username,
-                session: session
+        users.getUser(message.content.username, function(error, user) {
+            users.login(socket, message.content, function(error, session) {
+                if (error) return reply(socket, message.id, false, error);
+                console.log(user.username + ' is logged');
+                user.session = session;
+                reply(socket, message.id, true, user);
             });
         });
     });
