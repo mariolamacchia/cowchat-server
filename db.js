@@ -1,9 +1,13 @@
-if (process.env.REDISTOGO_URL) {
-    var rtg = require('url').parse(process.env.REDISTOGO_URL),
-        redis = require('redis').createClient(rtg.port, rtg.hostname);
-    redis.auth(rtg.auth.split(':')[1]);
+var inputUrl = process.env.REDIS_URL || process.env.REDISTOGO_URL;
+var redis;
+if (inputUrl) {
+    var url = require('url').parse(process.env.REDIS_URL || process.env.REDISTOGO_URL);
+    redis = require('redis').createClient(url.port, url.hostname);
+    if (url.auth) {
+        redis.auth(url.auth.split(':')[1]);
+    }
 } else {
-    var redis = require('redis').createClient();
+    redis = require('redis').createClient();
 }
 
 module.exports = {
